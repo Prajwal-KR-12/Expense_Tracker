@@ -40,30 +40,30 @@ const AnalyticsPage = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Financial Analytics
           </Typography>
         </Grid>
 
         {summary && (
-          <Grid container item xs={12} spacing={3}>
-            <Grid item xs={12} sm={6} md={3}>
+          <Grid container size={{ xs: 12 }} spacing={3}>
+            <Grid size={{ xs: 12, sm: 6 }} size={{ md: 3 }}>
               <StatCard title="Total Income" value={`₹${summary.totalIncome.toLocaleString('en-IN')}`} icon={<TrendingUp />} color="#4caf50" />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6 }} size={{ md: 3 }}>
               <StatCard title="Total Expenses" value={`₹${summary.totalExpenses.toLocaleString('en-IN')}`} icon={<TrendingDown />} color="#f44336" />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6 }} size={{ md: 3 }}>
               <StatCard title="Net Savings" value={`₹${summary.balance.toLocaleString('en-IN')}`} icon={<AccountBalanceWallet />} color="#2196f3" />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6 }} size={{ md: 3 }}>
               <StatCard title="Top Category" value={topCategory} icon={<Category />} color="#ff9800" />
             </Grid>
           </Grid>
         )}
 
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12 }} size={{ md: 6 }}>
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
             <Card sx={{ height: 600 }}>
               <CardHeader title="Spending by Category" subheader="A look at where your money is going." />
@@ -74,7 +74,7 @@ const AnalyticsPage = () => {
           </motion.div>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12 }} size={{ md: 6 }}>
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5, delay: 0.4 }}>
             <Card sx={{ height: 600 }}>
               <CardHeader title="Monthly Summary" subheader="A comparison of your income and expenses over time." />

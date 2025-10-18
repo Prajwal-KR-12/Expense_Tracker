@@ -7,6 +7,7 @@ import Register from './pages/Auth/Register';
 import Dashboard from './pages/Dashboard';
 import TransactionsPage from './pages/TransactionsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import SuggestionsPage from './pages/SuggestionsPage';
 import PrivateRoute from './components/routing/PrivateRoute';
 import Layout from './components/Layout';
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/transactions" element={<PrivateRoute><TransactionsPage /></PrivateRoute>} />
             <Route path="/analytics" element={<PrivateRoute><AnalyticsPage /></PrivateRoute>} />
+            <Route path="/suggestions" element={<PrivateRoute><SuggestionsPage /></PrivateRoute>} />
           </Routes>
         </Layout>
       </Router>

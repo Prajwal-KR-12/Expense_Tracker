@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Grid, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import Summary from '../components/analytics/Summary';
+import Chat from '../components/chat/Chat';
 
 interface SummaryData {
   totalIncome: number;
@@ -35,13 +36,13 @@ const Dashboard = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Dashboard
           </Typography>
         </Grid>
         {summary && (
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }}>
               <Summary 
                 totalIncome={summary.totalIncome} 
@@ -51,6 +52,9 @@ const Dashboard = () => {
             </motion.div>
           </Grid>
         )}
+        <Grid size={{ xs: 12 }}>
+          <Chat onTransactionAdded={fetchSummary} />
+        </Grid>
       </Grid>
     </motion.div>
   );

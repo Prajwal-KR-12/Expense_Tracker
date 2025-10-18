@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppBar, Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
-import { Dashboard, Receipt, BarChart, Login, AppRegistration, Logout } from '@mui/icons-material';
+import { Dashboard, Receipt, BarChart, Login, AppRegistration, Logout, Lightbulb } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -39,6 +39,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <ListItemButton component={Link} to="/analytics" selected={location.pathname === '/analytics'}>
               <ListItemIcon><BarChart /></ListItemIcon>
               <ListItemText primary="Analytics" />
+            </ListItemButton>
+            <ListItemButton component={Link} to="/suggestions" selected={location.pathname === '/suggestions'}>
+              <ListItemIcon><Lightbulb /></ListItemIcon>
+              <ListItemText primary="Suggestions" />
             </ListItemButton>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon><Logout /></ListItemIcon>

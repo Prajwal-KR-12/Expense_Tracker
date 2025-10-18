@@ -1,0 +1,28 @@
+# Environment variables
+.env
+backend/.env
+frontend/.env
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# VS Code set# Environment variables
+.env
+backend/.env
+frontend/.env
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# VS Code settings
+.vscode/
+tings
+.vscode/

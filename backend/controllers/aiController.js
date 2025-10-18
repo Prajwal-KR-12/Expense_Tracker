@@ -1,52 +1,13 @@
-const mongoose = require('mongoose');
-const Transaction = require('../models/Transaction');
-const OpenAI = require('openai');
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const axios = require('axios');
+const { generateInsights } = require('../agents/insightAgent');
 
 const getInsights = async (req, res) => {
   try {
-    const userId = new mongoose.Types.ObjectId(req.user.id);
-
-    const transactions = await Transaction.find({ user: userId }).sort({ date: -1 }).limit(100);
-
-    if (transactions.length < 5) {
-      return res.json({ insights: "Not enough transaction data to generate meaningful insights. Keep tracking your expenses!" });
-    }
-
-    const summary = transactions.reduce((acc, t) => {
-      if (t.type === 'expense') {
-        acc.totalExpenses = (acc.totalExpenses || 0) + t.amount;
-        acc.spendingByCategory[t.category] = (acc.spendingByCategory[t.category] || 0) + t.amount;
-      }
-      return acc;
-    }, { totalExpenses: 0, spendingByCategory: {} });
-
-    const prompt = `
-      You are a financial analyst for an Indian user. Your task is to provide 2-3 concise, actionable, and encouraging financial tips based on their recent spending habits. The currency is INR (₹).
-
-      Here is a summary of their recent expenses:
-      - Total Expenses: ₹${summary.totalExpenses.toLocaleString('en-IN')}
-      - Spending Breakdown by Category:
-        ${Object.entries(summary.spendingByCategory)
-          .map(([cat, total]) => `- ${cat}: ₹${total.toLocaleString('en-IN')}`)
-          .join('\n')}
-
-      Analyze this data and provide personalized tips. For example, if spending on 'Food' is high, suggest specific ways to save on food in India. Be specific and empathetic.
-    `;
-
-    const completion = await openai.chat.completions.create({
-model: "gpt-3.5-turbo",
-      max_tokens: 200,
-    });
-
-    const insights = completion.choices[0].message.content.trim();
+    const insights = await generateInsights(req.user.id);
     res.json({ insights });
-
   } catch (err) {
     console.error(err.message);
+    // Generic error handling for agent failures
     if (err.code === 'insufficient_quota' || (err.response && err.response.status === 429)) {
       return res.status(402).json({ msg: 'Could not generate insights due to an issue with the AI service provider. Please check your OpenAI billing details.' });
     }
@@ -58,54 +19,73 @@ model: "gpt-3.5-turbo",
 };
 
 const chat = async (req, res) => {
-  const { message, history } = req.body;
-  const userId = new mongoose.Types.ObjectId(req.user.id);
+  const { message } = req.body;
+  const apiKey = 'AIzaSyBD60v4bBT3TTHbygHdK9KqshQNyklxUqU'; // The user's API key
+
+  const prompt = `
+    You are a data entry agent for an expense tracker.
+    Your task is to extract the transaction details from the user's message and respond with a JSON object.
+
+    User message: "${message}"
+
+    Extract the following information:
+    - type (string): The type of the transaction. It can be either "income" or "expense".
+    - amount (float): The amount of the transaction.
+    - category (string): The category of the transaction. If not specified, use "Uncategorized" for expenses and "Salary" for income.
+    - description (string): A brief description of the transaction. If not specified, use the user's message.
+    - date (string, YYYY-MM-DD): The date of the transaction. If the user says "yesterday", the date is 2025-10-16. If the user says "today", the date is 2025-10-17.
+
+    Example 1:
+    User message: "I spent 250 on groceries today"
+    {
+      "type": "expense",
+      "amount": 250.0,
+      "category": "Groceries",
+      "description": "I spent 250 on groceries today",
+      "date": "2025-10-17"
+    }
+
+    Example 2:
+    User message: "income credited 50000"
+    {
+      "type": "income",
+      "amount": 50000.0,
+      "category": "Salary",
+      "description": "income credited 50000",
+      "date": "2025-10-17"
+    }
+
+    Respond with only the JSON object.
+  `;
 
   try {
-    const transactions = await Transaction.find({ user: userId }).sort({ date: -1 }).limit(30);
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`,
+      {
+        contents: [{ parts: [{ text: prompt }] }],
+      }
+    );
 
-    const formattedTransactions = JSON.stringify(transactions.map(t => ({
-      type: t.type,
-      category: t.category,
-      amount: t.amount,
-      date: t.date.toISOString().split('T')[0],
-      note: t.note
-    })), null, 2);
+    let generatedText = response.data.candidates[0].content.parts[0].text;
+    
+    if (generatedText.startsWith("```json")) {
+      generatedText = generatedText.substring(7, generatedText.length - 3);
+    }
 
-    const systemPrompt = `
-      You are a friendly and helpful financial assistant for an expense tracker app in India (currency is INR).
-      Your goal is to answer the user's questions based on their recent transaction history and provide helpful financial advice.
-      When asked for data, be precise. When asked for advice, be encouraging.
+    const jsonResponse = JSON.parse(generatedText);
 
-      Here is the user's recent transaction history in JSON format:
-      ${formattedTransactions}
-    `;
-
-    const messages = [
-        { role: "system", content: systemPrompt },
-        ...history,
-        { role: "user", content: message }
-    ]
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: messages,
-      max_tokens: 250,
+    // Save the new transaction to the database
+    await axios.post('http://localhost:5000/api/transactions', jsonResponse, {
+        headers: { 'x-auth-token': req.header('x-auth-token') },
     });
 
-    const reply = completion.choices[0].message.content.trim();
-    res.json({ reply });
+    res.json({ reply: jsonResponse });
 
-  } catch (err) {
-    console.error(err.message);
-    if (err.code === 'insufficient_quota' || (err.response && err.response.status === 429)) {
-      return res.status(402).json({ msg: 'Could not process chat due to an issue with the AI service provider. Please check your OpenAI billing details.' });
-    }
-    if (err.response && err.response.status === 401) {
-        return res.status(401).json({ msg: 'Could not authenticate with the AI service provider. Please check your API key.' });
-    }
-    res.status(500).send('Server Error');
+  } catch (error) {
+    console.error('Error calling Gemini API or saving transaction:', error.response ? error.response.data : error.message);
+    res.status(500).send('Server Error: Could not process the chat message.');
   }
 };
 
 module.exports = { getInsights, chat };
+
