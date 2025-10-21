@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Grid, Card, CardContent, CardHeader, Button, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -60,7 +60,7 @@ const TransactionsPage = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12 }}>
+        <Grid item xs={12}>
           <Typography variant="h4" component="h1" gutterBottom>
             Transactions
           </Typography>
@@ -73,7 +73,7 @@ const TransactionsPage = () => {
             Download as CSV
           </Button>
         </Grid>
-        <Grid size={{ xs: 12, lg: 4 }}>
+        <Grid item xs={12} lg={4}>
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
             <Card>
               <CardHeader title="Add Transaction" avatar={<AddCircle color="primary" />} />
@@ -83,7 +83,7 @@ const TransactionsPage = () => {
             </Card>
           </motion.div>
         </Grid>
-        <Grid size={{ xs: 12, lg: 8 }}>
+        <Grid item xs={12} lg={8}>
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5, delay: 0.4 }}>
             <TransactionTable transactions={transactions} fetchTransactions={fetchTransactions} />
           </motion.div>

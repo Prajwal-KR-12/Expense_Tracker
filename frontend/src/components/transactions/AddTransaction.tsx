@@ -52,7 +52,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({ onTransactionAdded }) =
     <form onSubmit={onSubmit}>
       <Typography variant="h6" gutterBottom>Add New Transaction</Typography>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
             <InputLabel>Type</InputLabel>
             <Select name="type" value={type} label="Type" onChange={onChange as any}>
@@ -61,7 +61,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({ onTransactionAdded }) =
             </Select>
           </FormControl>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid item xs={12} sm={6}>
           <FormControl fullWidth required>
             <InputLabel>Category</InputLabel>
             <Select name="category" value={category} label="Category" onChange={onChange as any}>
@@ -69,7 +69,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({ onTransactionAdded }) =
             </Select>
           </FormControl>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid item xs={12} sm={6}>
           <TextField
             type="number"
             name="amount"
@@ -80,7 +80,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({ onTransactionAdded }) =
             fullWidth
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid item xs={12} sm={6}>
           <TextField
             type="date"
             name="date"
@@ -93,7 +93,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({ onTransactionAdded }) =
             }}
           />
         </Grid>
-        <Grid size={{ xs: 12 }}>
+        <Grid item xs={12}>
           <TextField
             name="note"
             label="Note"
@@ -102,7 +102,7 @@ const AddTransaction: React.FC<AddTransactionProps> = ({ onTransactionAdded }) =
             fullWidth
           />
         </Grid>
-        <Grid size={{ xs: 12 }}>
+        <Grid item xs={12}>
           <Button type="submit" variant="contained" fullWidth>Add Transaction</Button>
         </Grid>
       </Grid>

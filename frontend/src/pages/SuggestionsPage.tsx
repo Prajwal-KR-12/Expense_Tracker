@@ -101,7 +101,7 @@ const SuggestionsPage: React.FC = () => {
         {suggestions.length > 0 ? (
           <Grid container spacing={2}>
             {suggestions.map((suggestion, index) => (
-              <Grid size={{ xs: 12 }} key={index}>
+              <Grid item xs={12} key={index}>
                 <Alert severity="warning">{suggestion}</Alert>
               </Grid>
             ))}

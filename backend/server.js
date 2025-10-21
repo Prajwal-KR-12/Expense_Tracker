@@ -9,7 +9,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: 'https://expense-tracker-t5p8.vercel.app' }));
 app.use(express.json());
 
 // Define Routes
