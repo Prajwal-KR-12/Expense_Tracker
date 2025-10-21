@@ -75,7 +75,7 @@ const chat = async (req, res) => {
     const jsonResponse = JSON.parse(generatedText);
 
     // Save the new transaction to the database
-    await axios.post(`http://localhost:${req.socket.localPort}/api/transactions`, jsonResponse, {
+    await axios.post('http://localhost:5000/api/transactions', jsonResponse, {
         headers: { 'x-auth-token': req.header('x-auth-token') },
     });
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from 'axios';
 import {
   Table,
@@ -55,7 +56,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ transactions, fetch
           </TableRow>
         </TableHead>
         <TableBody>
-          {transactions.map((row) => (
+          {transactions.map((row, index) => (
             <TableRow
               key={row._id}
               sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}

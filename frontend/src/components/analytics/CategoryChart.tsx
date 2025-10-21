@@ -1,3 +1,4 @@
+import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface CategoryData {
@@ -15,22 +16,19 @@ const COLORS = [
 ];
 
 const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
-  const chartData = data.map(item => ({ ...item, name: item._id }));
-
   return (
     <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
-            data={chartData}
+            data={data}
             dataKey="total"
-            nameKey="name"
+            nameKey="_id"
             cx="50%"
             cy="50%"
             outerRadius={150}
             fill="#8884d8"
             labelLine={false}
-            label={(props: any) => {
-              const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
+            label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
               const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
               const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
               const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
@@ -41,7 +39,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
               );
             }}
           >
-            {chartData.map((_, index) => (
+            {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
